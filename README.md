@@ -1,4 +1,4 @@
-#tvb-scripting
+# tvb-scripting
 
 generic scripting syntax for running tvb simulations
 
@@ -35,6 +35,26 @@ The json-type nested python dictionaries used by tvb-scripting lend themselves v
 ***Plays well with Sumatra***
 
 ibid...
+
+
+
+## Usage
+
+The command line usage is simple: 
+
+        python run_tvb_sims.py <PARAMETER FILE>
+
+
+***Examples***
+
+Parameter files matching several of the demo examples from the tvb-library repo are given in /examples/tvb_demos. 
+
+
+
+
+
+
+
 
 
 
