@@ -4,12 +4,12 @@ generic scripting syntax for running tvb simulations
 
 
 
-## What's this then?
+### What's this then?
 
 tvb-scripting is a simple set of tools that allow a range of tvb simulation scenarios to be run by simply supplying a short text file detailing the parameter values to be used. 
 
 
-## Why? 
+### Why? 
 
 The rationale is to try to separate code specifying how a simulation is run from code specifying the parameter values used. This is generally regarded as 'good practice' or 'desirable' in both simulation and data analysis research, and has a number of advantages.  
 
@@ -38,7 +38,7 @@ ibid...
 
 
 
-## Usage
+### Usage
 
 The command line usage is simple: 
 
