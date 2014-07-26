@@ -21,8 +21,9 @@ from tvb.datatypes import surfaces
 
 import tvb.analyzers.fmri_balloon as bold
 
+from tvb.simulator.plot.tools import plot_local_connectivity
+#from tvb.simulator.plot.tools import surface_timeseries
 
-from tvb.simulator.plot.tools import surface_timeseries, plot_local_connectivity 
 
 
 class Sim(object):
