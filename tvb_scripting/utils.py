@@ -36,6 +36,9 @@ def create_param_files(default_pset_file, iterlist, new_pfx, writefiles=False):
   all_new_fnames = []
   all_new_fs_dict = {}
 
+  model_files_dict = {}
+  model_params_dict = {}
+
   for ap_it, ap in enumerate(all_prods):
     new_pset = default_pset.copy()
     new_name = 'model%s__' %(ap_it)
@@ -65,31 +68,14 @@ def create_param_files(default_pset_file, iterlist, new_pfx, writefiles=False):
 
     all_new_fs_dict[new_name] = new_fname 
 
-  return all_new_fs_dict
+    model_files_dict[new_name] = new_fname
+    model_params_dict[new_name] = {'num': ap_it,
+                                   'varied_params': ap,
+                                   'params_dict': new_pset}
+
+  return model_files_dict, model_params_dict
+
+  #return all_new_fs_dict
     
-
-"""
-  #all_new_psets
-
-  new_fs = []   
-  new_fs_dict = {}     
-  for a_it, a in enumerate(all_new_psets): 
-    new_fname = '%s_%s.param' %(new_pfx, a_it)
-    print 'new file: %s' %new_fname
-    f = open(new_fname, 'w+')
-    f.writelines(str(a))
-    f.close()
-    new_fs.append(new_fname)
-
-    new_modname = ''
-    for aa in a:
-      if len(
-      new_modname +=
-    new_fs_dict
-
-  return new_fs
-  
-"""
-
 
 
