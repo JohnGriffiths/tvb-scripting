@@ -2,7 +2,7 @@
 # vi: set ft=python sts=4 ts=4 sw=4 et:
 """TVB-Scripting top level namespace
 """
-from Runner import Sim
-from utils import make_parameter_files
+from runner import Sim
+from utils import create_param_files
 
 
