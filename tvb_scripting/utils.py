@@ -3,8 +3,9 @@
 
 from parameters import ParameterSet
 from itertools import product
+import numpy as np
 
-def create_param_files(default_pset_file, iterlist, new_pfx):
+def create_param_files(default_pset_file, iterlist, new_pfx, writefiles=False):
   """
   Usage:
   ======
@@ -31,17 +32,47 @@ def create_param_files(default_pset_file, iterlist, new_pfx):
   all_prods = list(product(*all_vals))
 
   all_new_psets = []
-  for ap in all_prods:
+  all_new_names = []
+  all_new_fnames = []
+  all_new_fs_dict = {}
+
+  for ap_it, ap in enumerate(all_prods):
+    new_pset = default_pset.copy()
+    new_name = 'model%s__' %(ap_it)
     for aa in ap:
-      new_pset = default_pset.copy()
+  
       if len(aa) == 3:
         new_pset[aa[0]][aa[1]] = aa[2]
       elif len(aa) == 4: 
         new_pset[aa[0]][aa[1]][aa[2]] = aa[3]
-      all_new_psets.append(new_pset)
+   
+      if 'type' in aa:
+        new_name += '__%s_%s' %(aa[0], aa[2])
+      else: 
+        new_name += '__%s_%s' %(aa[-2],aa[-1])
+    
+    all_new_psets.append(new_pset)
+    all_new_names.append(new_name)
+
+    new_fname = '%s_%s.param' %(new_pfx,  new_name)
+    print 'new file: %s' %new_fname
+    if writefiles:
+      f = open(new_fname, 'w+')
+      f.writelines(str(new_pset))
+      f.close()
+    
+    all_new_fnames.append(new_fname)
+
+    all_new_fs_dict[new_name] = new_fname 
+
+  return all_new_fs_dict
+    
+
+"""
   #all_new_psets
 
-  new_fs = []        
+  new_fs = []   
+  new_fs_dict = {}     
   for a_it, a in enumerate(all_new_psets): 
     new_fname = '%s_%s.param' %(new_pfx, a_it)
     print 'new file: %s' %new_fname
@@ -50,10 +81,15 @@ def create_param_files(default_pset_file, iterlist, new_pfx):
     f.close()
     new_fs.append(new_fname)
 
+    new_modname = ''
+    for aa in a:
+      if len(
+      new_modname +=
+    new_fs_dict
 
   return new_fs
   
-
+"""
 
 
 
