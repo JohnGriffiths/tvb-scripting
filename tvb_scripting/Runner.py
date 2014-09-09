@@ -80,6 +80,11 @@ class Sim(object):
         setattr(eval(a[0]), a[1],eval(a[2]))
         #sim,eval(a[0]),eval(a[1]))
 
+    # Stochastic integrator
+    if 'HeunStochastic' in Ps['integrator']:
+      from tvb.simulator.lab import noise
+      hiss = noise.Additive(nsig=np.array(Ps['integrator']['stochastic_nsig']))  # nsigm 0.015
+      sim.integrator.noise = hiss
  
     # Non-default connectivity     
     # (to add here: 
