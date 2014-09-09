@@ -17,13 +17,14 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from tvb.simulator.lab import connectivity,coupling,models,integrators,simulator,monitors,equations,patterns
-from tvb.datatypes import surfaces
+from tvb.datatypes import surfaces, projections
 
 import tvb.analyzers.fmri_balloon as bold
 
 from tvb.simulator.plot.tools import plot_local_connectivity
 #from tvb.simulator.plot.tools import surface_timeseries
 
+from scipy.io.matlab import loadmat
 
 
 class Sim(object):
@@ -70,7 +71,8 @@ class Sim(object):
       else:
         thisattr = getattr(_class,Ps[_name]['type'])(**Ps[_name]['params']) 
       setattr(sim,_name,thisattr)
-
+      
+ 
     # Additionals - parameters that are functions of other classes
     # (example = larter_breakdspear demo)
     if 'additionals' in Ps:
@@ -87,6 +89,17 @@ class Sim(object):
      if 'folder_path' in Ps['connectivity']: # (this is from the deterministic_stimulus demo)
        sim.connectivity.default.reload(sim.connectivity, Ps['connectivity']['folder_path'])
        sim.connectivity.configure()
+
+
+    # EEG projections 
+    # (need to do this separately because don't seem to be able to do EEG(projection_matrix='<file>')
+    for m_it, m in enumerate(Ps['monitors']): # (yes I know enumerate isn't necessary here; but it's more transparent imho)
+      # assumption here is that the sim object doesn't re-order the list of monitors for any bizarre reason...
+      # (which would almost certainly cause an error anyway...)
+      if m['type'] is 'EEG' and 'proj_mat_path' in m:
+        proj_mat = loadmat(m['proj_mat_path'])['ProjectionMatrix']
+        pr = projections.ProjectionRegionEEG(projection_data=proj_mat)
+        sim.monitors[m_it].projection_matrix_data=pr
 
 
     # Surface
@@ -197,13 +210,18 @@ class Sim(object):
       if Ps['sim_params']['make_dataframe']:
         for m in monitor_types:
           thesedfs = []
-          for l_it, l in enumerate(sim.connectivity.region_labels):
+
+          # temp solution; haven't yet found how to get the EEG sensor labels...this needs to be added here
+          if 'EEG' in m: labels = ['sensor_%s' %(s+1) for s in np.arange(0,sim_data_arrs[m].shape[1]) ]
+          else: labels = sim.connectivity.region_labels
+          
+          for l_it, l in enumerate(labels): #(sim.connectivity.region_labels):
             #for s_it, s in enumerate(sim.model.state_variables)
             for s_it, s in enumerate(np.arange(0,sim_data_arrs[m].shape[1])): # NEED TO CHANGE THIS
               thesedfs.append(pd.DataFrame(sim_data_arrs[m][:,s_it,l_it,0], 
                                            index = sim_time_arrs[m],
                                            columns=['%s_%s_%s' %(m[0:4],l,s)]))   
-        df_sims[m] = pd.concat(thesedfs, axis=1)
+          df_sims[m] = pd.concat(thesedfs, axis=1)
 
 
     """
@@ -331,3 +349,4 @@ class Sim(object):
     #tsi.show()
 
  
+
