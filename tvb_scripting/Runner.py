@@ -9,6 +9,8 @@ Class for running TVB simulations in the TVB-scripting format.
 
 """
 
+from IPython import embed
+
 import numpy as np
 import sys
 import os
@@ -216,8 +218,10 @@ class Sim(object):
         for m in monitor_types:
           thesedfs = []
 
+          #embed()
+
           # temp solution; haven't yet found how to get the EEG sensor labels...this needs to be added here
-          if 'EEG' in m: labels = ['sensor_%s' %(s+1) for s in np.arange(0,sim_data_arrs[m].shape[1]) ]
+          if 'EEG' in m: labels = ['sensor_%s' %(s+1) for s in np.arange(0,sim_data_arrs[m].shape[2]) ]
           else: labels = sim.connectivity.region_labels
           
           for l_it, l in enumerate(labels): #(sim.connectivity.region_labels):
@@ -225,7 +229,7 @@ class Sim(object):
             for s_it, s in enumerate(np.arange(0,sim_data_arrs[m].shape[1])): # NEED TO CHANGE THIS
               thesedfs.append(pd.DataFrame(sim_data_arrs[m][:,s_it,l_it,0], 
                                            index = sim_time_arrs[m],
-                                           columns=['%s_%s_%s' %(m[0:4],l,s)]))   
+                                           columns=['%s_%s_sv%s' %(m[0:4],l,s)]))   
           df_sims[m] = pd.concat(thesedfs, axis=1)
 
 
