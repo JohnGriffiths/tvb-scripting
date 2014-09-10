@@ -15,7 +15,7 @@ python run_tvb_sims_main.py <parameter_file>
 import numpy
 import sys
 from parameters import ParameterSet
-from Runner import Sim
+from runner import Sim
 
 #improt os
 #tvbsd = os.path.abspath(os.getcwd())
