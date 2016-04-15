@@ -20,6 +20,9 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from tvb.simulator.lab import connectivity,coupling,models,integrators,simulator,monitors,equations,patterns
 from tvb.datatypes import surfaces, projections
+from tvb.datatypes.projections import ProjectionSurfaceEEG
+from tvb.datatypes.sensors import SensorsEEG
+from tvb.datatypes.region_mapping import RegionMapping
 
 import tvb.analyzers.fmri_balloon as bold
 
@@ -104,10 +107,24 @@ class Sim(object):
     for m_it, m in enumerate(Ps['monitors']): # (yes I know enumerate isn't necessary here; but it's more transparent imho)
       # assumption here is that the sim object doesn't re-order the list of monitors for any bizarre reason...
       # (which would almost certainly cause an error anyway...)
-      if m['type'] is 'EEG' and 'proj_mat_path' in m:
-        proj_mat = loadmat(m['proj_mat_path'])['ProjectionMatrix']
-        pr = projections.ProjectionRegionEEG(projection_data=proj_mat)
-        sim.monitors[m_it].projection_matrix_data=pr
+      #if m['type'] is 'EEG' and 'proj_mat_path' in m:
+      #  proj_mat = loadmat(m['proj_mat_path'])['ProjectionMatrix']
+      #  pr = projections.ProjectionRegionEEG(projection_data=proj_mat)
+      #  sim.monitors[m_it].projection_matrix_data=pr
+      if m['type'] is 'EEG':
+    
+        if m['proj_surf'] is 'default': pr = ProjectionSurfaceEEG(load_default=True)
+        else: pr = ProjectionSurfaceEEG.from_file(m['proj_surf'])
+    
+        eeg_sens = SensorsEEG.from_file(source_file=m['source_file'])
+   
+        if m['reg_map'] is 'default': 
+          rm = RegionMapping(load_default=True)
+        else: rm = RegionMapping.from_file(m['reg_map'])
+
+        sim.monitors[m_it].projection = pr
+        sim.monitors[m_it].sensors = eeg_sens
+        sim.monitors[m_it].region_mapping = rm
 
 
     # Surface
